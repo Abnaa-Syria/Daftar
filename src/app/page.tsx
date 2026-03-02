@@ -186,11 +186,9 @@ function HeadlineGridSection({ section, articles }: SectionModuleProps) {
         href={`/section/${section.slug}`}
         accentColor={section.color}
       />
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
-          <NewsCard article={top} variant="featured" showSection />
-        </div>
-        <div className="space-y-3">
+      <div className="space-y-6">
+        <NewsCard article={top} variant="featured" showSection />
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {rest.map((article) => (
             <div
               key={article.id}

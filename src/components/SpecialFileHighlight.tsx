@@ -28,29 +28,29 @@ export default function SpecialFileHighlight({ file }: Props) {
           href={`/file/${file.slug}`}
           className="group relative overflow-hidden rounded-3xl lg:col-span-2 border border-border dark:border-border-dark bg-surface dark:bg-surface-dark shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-crimson focus-visible:ring-offset-2"
         >
-          <div className="relative aspect-[16/7] md:aspect-[16/6]">
+          <div className="relative aspect-[16/7] md:aspect-[16/6] transition-transform duration-700 group-hover:scale-[1.03]">
             <Image
               src={file.coverImage}
               alt={file.title}
               fill
-              className="object-cover group-hover:scale-105 transition-transform duration-700"
+              className="object-cover"
               sizes="(max-width: 768px) 100vw, 600px"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-transparent" />
-          </div>
-          <div className="absolute inset-x-0 bottom-0 p-6 space-y-2">
-            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-purple-700 text-[11px] font-bold text-white">
-              ملف خاص
-            </span>
-            <h2 className="text-2xl md:text-3xl font-extrabold text-white leading-tight line-clamp-2">
-              {file.title}
-            </h2>
-            <p className="text-sm text-white/80 max-w-2xl line-clamp-2">
-              {file.description}
-            </p>
-            <span className="text-[11px] text-white/70">
-              نُشر في {formatDate(file.publishedAt)}
-            </span>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/55 to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 p-4 md:p-6 space-y-2 md:space-y-2.5">
+              <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-purple-700 text-[11px] font-bold text-white">
+                ملف خاص
+              </span>
+              <h2 className="text-xl md:text-3xl font-extrabold text-white leading-tight line-clamp-2">
+                {file.title}
+              </h2>
+              <p className="hidden sm:block text-sm text-white/80 max-w-2xl line-clamp-2">
+                {file.description}
+              </p>
+              <span className="text-[11px] text-white/70">
+                نُشر في {formatDate(file.publishedAt)}
+              </span>
+            </div>
           </div>
         </Link>
 
