@@ -26,9 +26,9 @@ export default function SpecialFileHighlight({ file }: Props) {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
         <Link
           href={`/file/${file.slug}`}
-          className="group relative overflow-hidden rounded-3xl lg:col-span-2 border border-border dark:border-border-dark bg-surface dark:bg-surface-dark shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-crimson focus-visible:ring-offset-2"
+          className="group relative overflow-hidden rounded-3xl lg:col-span-2 h-full border border-border dark:border-border-dark bg-surface dark:bg-surface-dark shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-crimson focus-visible:ring-offset-2"
         >
-          <div className="relative aspect-[16/7] md:aspect-[16/6] transition-transform duration-700 group-hover:scale-[1.03]">
+          <div className="relative h-full transition-transform duration-700 group-hover:scale-[1.03]">
             <Image
               src={file.coverImage}
               alt={file.title}
