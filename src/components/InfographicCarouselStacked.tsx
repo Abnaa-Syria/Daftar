@@ -39,7 +39,7 @@ function InfographicCard({ info }: { info: Infographic }) {
       href={`/infographic/${info.slug}`}
       className="group block h-full"
     >
-      <div className="relative h-full rounded-3xl overflow-hidden bg-surface dark:bg-surface-dark shadow-[0_16px_40px_rgba(0,0,0,0.35)] transition-transform duration-300 group-hover:-translate-y-1 group-hover:shadow-[0_22px_55px_rgba(0,0,0,0.45)]">
+      <div className="relative aspect-[3/4] rounded-3xl overflow-hidden bg-surface dark:bg-surface-dark shadow-[0_16px_40px_rgba(0,0,0,0.35)] transition-transform duration-300 group-hover:-translate-y-1 group-hover:shadow-[0_22px_55px_rgba(0,0,0,0.45)]">
         <Image
           src={info.images[0]}
           alt={info.title}
