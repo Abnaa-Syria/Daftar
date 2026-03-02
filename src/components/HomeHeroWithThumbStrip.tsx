@@ -80,7 +80,7 @@ export default function HomeHeroWithThumbStrip({ articles, title = "أهم ال�
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
-        <div className="relative aspect-[16/7] md:aspect-[16/5]">
+        <div className="relative aspect-[4/3] sm:aspect-[16/9] md:aspect-[16/5]">
           {visibleArticles.map((article, i) => (
             <div
               key={article.id}
@@ -100,7 +100,7 @@ export default function HomeHeroWithThumbStrip({ articles, title = "أهم ال�
           ))}
           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10" />
 
-          <div className="absolute inset-x-0 bottom-0 p-5 md:p-8 flex flex-col gap-3 md:gap-4">
+          <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5 md:p-8 pb-12 sm:pb-12 md:pb-8 flex flex-col gap-2.5 sm:gap-3 md:gap-4">
             <div className="flex flex-wrap items-center gap-2 text-xs md:text-sm text-white/80">
               {active.isBreaking && (
                 <span className="px-2.5 py-0.5 rounded-full bg-red-600 text-[11px] font-bold">
@@ -125,12 +125,12 @@ export default function HomeHeroWithThumbStrip({ articles, title = "أهم ال�
             </div>
 
             <Link href={`/news/${active.slug}`}>
-              <h2 className="text-2xl md:text-4xl font-extrabold leading-tight text-white mb-1 line-clamp-2 hover:underline">
+              <h2 className="text-xl sm:text-2xl md:text-4xl font-extrabold leading-tight text-white mb-1 line-clamp-2 hover:underline">
                 {active.title}
               </h2>
             </Link>
 
-            <p className="text-sm md:text-base text-white/80 max-w-2xl line-clamp-2">
+            <p className="hidden sm:block text-sm md:text-base text-white/80 max-w-2xl line-clamp-2">
               {active.excerpt}
             </p>
 
@@ -142,10 +142,10 @@ export default function HomeHeroWithThumbStrip({ articles, title = "أهم ال�
               <span>{active.readTime} دقائق قراءة</span>
             </div>
 
-            <div className="flex items-center gap-3 mt-2">
+            <div className="flex flex-wrap items-center gap-3 mt-2">
               <Link
                 href={`/news/${active.slug}`}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-crimson text-white text-sm font-bold hover:bg-crimson-light transition-colors"
+                className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-crimson text-white text-[13px] sm:text-sm font-bold hover:bg-crimson-light transition-colors"
               >
                 اقرأ الآن
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -177,7 +177,7 @@ export default function HomeHeroWithThumbStrip({ articles, title = "أهم ال�
         </div>
 
         {/* Dots */}
-        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5">
           {visibleArticles.map((_, i) => (
             <button
               key={i}
