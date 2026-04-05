@@ -1,15 +1,13 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { publicApi } from "@/lib/api";
-<<<<<<< HEAD
 import { resolveMediaSrc } from "@/lib/media";
-=======
-export const dynamic = "force-dynamic";
->>>>>>> 86788db63155d122217a4e04133861a4d31a65d8
 import { formatDate } from "@/lib/date";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import NewsCard from "@/components/NewsCard";
 import type { SpecialFile } from "@/types/content";
+
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;

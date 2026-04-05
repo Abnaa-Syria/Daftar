@@ -1,13 +1,14 @@
 import { notFound } from "next/navigation";
 import { publicApi } from "@/lib/api";
 import { formatDate } from "@/lib/date";
-export const dynamic = "force-dynamic";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import NewsCard from "@/components/NewsCard";
 import Link from "next/link";
 import Image from "next/image";
 import type { Section, Article, Infographic, SpecialFile } from "@/types/content";
 import { resolveMediaSrc } from "@/lib/media";
+
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -90,11 +91,7 @@ async function InfographicSection() {
           >
             <div className="relative aspect-[3/4] rounded-xl overflow-hidden mb-3">
               <Image
-<<<<<<< HEAD
                 src={resolveMediaSrc(info.images[0]?.url)}
-=======
-                src={info.images[0]?.url}
->>>>>>> 86788db63155d122217a4e04133861a4d31a65d8
                 alt={info.title}
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -143,11 +140,7 @@ async function SpecialFileSection() {
           >
             <div className="relative aspect-[16/9] rounded-xl overflow-hidden">
               <Image
-<<<<<<< HEAD
                 src={resolveMediaSrc(file.coverImage)}
-=======
-                src={file.coverImage ?? ""}
->>>>>>> 86788db63155d122217a4e04133861a4d31a65d8
                 alt={file.title}
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-500"
