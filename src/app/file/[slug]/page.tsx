@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { publicApi } from "@/lib/api";
+export const dynamic = "force-dynamic";
 import { formatDate } from "@/lib/date";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import NewsCard from "@/components/NewsCard";

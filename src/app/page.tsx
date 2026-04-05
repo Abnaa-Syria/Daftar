@@ -1,4 +1,5 @@
 import HomeHeroWithThumbStrip from "@/components/HomeHeroWithThumbStrip";
+export const dynamic = "force-dynamic";
 import BreakingTicker from "@/components/BreakingTicker";
 import FeaturedWithThumbnails from "@/components/FeaturedWithThumbnails";
 import SplitListWithFeatured from "@/components/SplitListWithFeatured";
@@ -123,7 +124,7 @@ export default async function HomePage() {
 }
 
 function dedupeArticles(list: Article[]): Article[] {
-  const seen = new Set<string>();
+  const seen = new Set<number>();
   const result: Article[] = [];
   for (const article of list) {
     if (seen.has(article.id)) continue;

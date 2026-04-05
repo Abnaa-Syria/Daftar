@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { publicApi } from "@/lib/api";
 import { formatDate } from "@/lib/date";
+export const dynamic = "force-dynamic";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import NewsCard from "@/components/NewsCard";
 import Link from "next/link";
@@ -88,7 +89,7 @@ async function InfographicSection() {
           >
             <div className="relative aspect-[3/4] rounded-xl overflow-hidden mb-3">
               <Image
-                src={info.images[0]}
+                src={info.images[0]?.url}
                 alt={info.title}
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -137,7 +138,7 @@ async function SpecialFileSection() {
           >
             <div className="relative aspect-[16/9] rounded-xl overflow-hidden">
               <Image
-                src={file.coverImage}
+                src={file.coverImage ?? ""}
                 alt={file.title}
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-500"

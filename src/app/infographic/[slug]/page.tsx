@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { publicApi } from "@/lib/api";
 import { formatDate } from "@/lib/date";
+export const dynamic = "force-dynamic";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import Carousel from "@/components/Carousel";
 import type { Infographic } from "@/types/content";

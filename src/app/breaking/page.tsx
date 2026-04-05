@@ -1,6 +1,7 @@
 import { publicApi } from "@/lib/api";
 import { formatDate, formatTime } from "@/lib/date";
 import Link from "next/link";
+export const dynamic = "force-dynamic";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import type { BreakingItem } from "@/types/content";
 

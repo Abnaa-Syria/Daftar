@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+export const dynamic = "force-dynamic";
 import { publicApi } from "@/lib/api";
 import { formatDate, timeAgo } from "@/lib/date";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -75,7 +76,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
         <ShareBar title={article.title} />
         <div className="flex items-center gap-3">
           <FontSizeControls />
-          <BookmarkButton articleId={article.id} />
+          <BookmarkButton articleId={String(article.id)} />
         </div>
       </div>
 

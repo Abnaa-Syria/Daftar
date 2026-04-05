@@ -12,6 +12,7 @@ export interface Author {
   name: string;
   role?: string | null;
   avatar?: string | null;
+  bio?: string | null;
 }
 
 export interface Tag {

@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { publicApi } from "@/lib/api";
 import Breadcrumbs from "@/components/Breadcrumbs";
+export const dynamic = "force-dynamic";
 import NewsCard from "@/components/NewsCard";
 import type { Article } from "@/types/content";
 
