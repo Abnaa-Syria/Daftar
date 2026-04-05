@@ -3,6 +3,7 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { adminApi } from "@/lib/api";
 import Image from "next/image";
+import { resolveMediaSrc } from "@/lib/media";
 
 interface MediaItem { id: number; filename: string; url: string; mimeType: string; size: number; alt: string; createdAt: string; }
 
@@ -64,7 +65,7 @@ export default function AdminMediaPage() {
           {data.map((item) => (
             <div key={item.id} className="group relative rounded-xl overflow-hidden border border-border dark:border-border-dark bg-surface dark:bg-surface-dark">
               <div className="aspect-square relative">
-                <Image src={item.url.startsWith("http") ? item.url : `http://localhost:5000${item.url}`} alt={item.alt || item.filename} fill className="object-cover" sizes="200px" />
+                <Image src={resolveMediaSrc(item.url)} alt={item.alt || item.filename} fill className="object-cover" sizes="200px" />
               </div>
               <div className="p-2">
                 <p className="text-xs font-bold truncate">{item.filename}</p>

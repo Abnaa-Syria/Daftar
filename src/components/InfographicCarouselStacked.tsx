@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { resolveMediaSrc } from "@/lib/media";
 import type { Infographic } from "@/types/content";
 import SectionHeaderBar from "./SectionHeaderBar";
 import CardCarousel from "./CardCarousel";
@@ -44,7 +45,7 @@ function InfographicCard({ info }: { info: Infographic }) {
     >
       <div className="relative aspect-[3/4] rounded-3xl overflow-hidden bg-surface dark:bg-surface-dark shadow-[0_16px_40px_rgba(0,0,0,0.35)] transition-transform duration-300 group-hover:-translate-y-1 group-hover:shadow-[0_22px_55px_rgba(0,0,0,0.45)]">
         <Image
-          src={info.images?.[0]?.url || info.coverImage || "/logo.png"}
+          src={resolveMediaSrc(info.images?.[0]?.url || info.coverImage)}
           alt={info.title}
           fill
           className="object-cover"

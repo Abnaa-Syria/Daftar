@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { publicApi } from "@/lib/api";
+import { resolveMediaSrc } from "@/lib/media";
 import { formatDate } from "@/lib/date";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import NewsCard from "@/components/NewsCard";
@@ -32,7 +33,7 @@ export default async function SpecialFilePage({ params }: { params: Promise<{ sl
       {/* Cover */}
       <div className="relative aspect-[16/6] rounded-2xl overflow-hidden mt-4 mb-8">
         <Image
-          src={file.coverImage || "/logo.png"}
+          src={resolveMediaSrc(file.coverImage)}
           alt={file.title}
           fill
           className="object-cover"

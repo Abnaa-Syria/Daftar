@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import type { Article } from "@/types/content";
 import { timeAgo } from "@/lib/date";
+import { resolveMediaSrc } from "@/lib/media";
 
 interface Props {
   articles: Article[];
@@ -89,7 +90,7 @@ export default function HomeHeroWithThumbStrip({ articles, title = "أهم ال�
               }`}
             >
               <Image
-                src={article.image || "/logo.png"}
+                src={resolveMediaSrc(article.image)}
                 alt={article.title}
                 fill
                 className="object-cover"
@@ -207,7 +208,7 @@ export default function HomeHeroWithThumbStrip({ articles, title = "أهم ال�
           >
             <div className="relative w-16 h-16 shrink-0">
               <Image
-                src={article.image || "/logo.png"}
+                src={resolveMediaSrc(article.image)}
                 alt={article.title}
                 fill
                 className="object-cover"

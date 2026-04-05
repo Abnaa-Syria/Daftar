@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import type { Article } from "@/types/content";
 import { timeAgo } from "@/lib/date";
+import { resolveMediaSrc } from "@/lib/media";
 
 interface Props {
   articles: Article[];
@@ -42,7 +43,7 @@ export default function HeroSlider({ articles }: Props) {
           }`}
         >
           <Image
-            src={a.image || "/logo.png"}
+            src={resolveMediaSrc(a.image)}
             alt={a.title}
             fill
             className="object-cover"

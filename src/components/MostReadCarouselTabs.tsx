@@ -7,6 +7,7 @@ import CardCarousel from "./CardCarousel";
 import SectionHeaderBar from "./SectionHeaderBar";
 import Link from "next/link";
 import Image from "next/image";
+import { resolveMediaSrc } from "@/lib/media";
 
 export default function MostReadCarouselTabs({
   dayArticles = [],
@@ -74,7 +75,7 @@ function MostReadCard({ article }: CardProps) {
     >
       <div className="relative aspect-[16/10]">
         <Image
-          src={article.image || "/logo.png"}
+          src={resolveMediaSrc(article.image)}
           alt={article.title}
           fill
           className="object-cover transition-transform duration-500"

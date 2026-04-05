@@ -4,6 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { adminApi } from "@/lib/api";
 import DataTable from "@/components/admin/DataTable";
 import Image from "next/image";
+import { resolveMediaSrc } from "@/lib/media";
 
 interface SpecialFile {
   id: number;
@@ -173,7 +174,7 @@ export default function AdminSpecialFilesPage() {
 
           {form.coverImage && (
             <div className="relative h-36 w-64 rounded-lg overflow-hidden border">
-              <Image src={form.coverImage.startsWith("http") ? form.coverImage : `http://localhost:5000${form.coverImage}`} alt="cover" fill className="object-cover" />
+              <Image src={resolveMediaSrc(form.coverImage)} alt="cover" fill className="object-cover" />
             </div>
           )}
 

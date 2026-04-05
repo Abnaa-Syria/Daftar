@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { resolveMediaSrc } from "@/lib/media";
 
 interface Props {
   images: string[];
@@ -25,7 +26,7 @@ export default function Carousel({ images, title }: Props) {
             }`}
           >
             <Image
-              src={img}
+              src={resolveMediaSrc(img)}
               alt={title ? `${title} - ${i + 1}` : `صورة ${i + 1}`}
               fill
               className="object-contain"

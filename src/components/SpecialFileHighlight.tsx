@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { resolveMediaSrc } from "@/lib/media";
 import type { SpecialFile } from "@/types/content";
 import { formatDate } from "@/lib/date";
 import NewsCard from "./NewsCard";
@@ -49,7 +50,7 @@ export default function SpecialFileHighlight({ file, files }: Props) {
         >
           <div className="relative h-full transition-transform duration-700 group-hover:scale-[1.03]">
             <Image
-              src={featuredFile.coverImage || "/logo.png"}
+              src={resolveMediaSrc(featuredFile.coverImage)}
               alt={featuredFile.title}
               fill
               className="object-cover"
@@ -101,7 +102,7 @@ function MobileSpecialFileCard({ file }: { file: SpecialFile }) {
     >
       <div className="relative aspect-[3/4]">
         <Image
-              src={file.coverImage || "/logo.png"}
+              src={resolveMediaSrc(file.coverImage)}
           alt={file.title}
           fill
           className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"

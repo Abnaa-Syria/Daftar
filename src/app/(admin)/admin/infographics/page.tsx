@@ -4,6 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { adminApi } from "@/lib/api";
 import DataTable from "@/components/admin/DataTable";
 import Image from "next/image";
+import { resolveMediaSrc } from "@/lib/media";
 
 interface Infographic {
   id: number;
@@ -200,7 +201,7 @@ export default function AdminInfographicsPage() {
                 <div className="rounded-lg border p-2">
                   <p className="text-xs mb-1">Preview Cover</p>
                   <div className="relative h-36">
-                    <Image src={form.coverImage.startsWith("http") ? form.coverImage : `http://localhost:5000${form.coverImage}`} alt="cover" fill className="object-cover rounded" />
+                    <Image src={resolveMediaSrc(form.coverImage)} alt="cover" fill className="object-cover rounded" />
                   </div>
                 </div>
               )}
@@ -208,7 +209,7 @@ export default function AdminInfographicsPage() {
                 <div className="rounded-lg border p-2">
                   <p className="text-xs mb-1">Preview OG</p>
                   <div className="relative h-36">
-                    <Image src={form.ogImage.startsWith("http") ? form.ogImage : `http://localhost:5000${form.ogImage}`} alt="og" fill className="object-cover rounded" />
+                    <Image src={resolveMediaSrc(form.ogImage)} alt="og" fill className="object-cover rounded" />
                   </div>
                 </div>
               )}

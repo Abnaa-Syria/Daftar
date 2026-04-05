@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { publicApi } from "@/lib/api";
+import { resolveMediaSrc } from "@/lib/media";
 import { formatDate, timeAgo } from "@/lib/date";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import ShareBar from "@/components/ShareBar";
@@ -82,7 +83,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
       {/* Hero Image */}
       <div className="relative aspect-[16/9] rounded-xl overflow-hidden mb-8">
         <Image
-          src={article.image || "/logo.png"}
+          src={resolveMediaSrc(article.image)}
           alt={article.title}
           fill
           className="object-cover"

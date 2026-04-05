@@ -6,6 +6,7 @@ import NewsCard from "@/components/NewsCard";
 import Link from "next/link";
 import Image from "next/image";
 import type { Section, Article, Infographic, SpecialFile } from "@/types/content";
+import { resolveMediaSrc } from "@/lib/media";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -88,7 +89,7 @@ async function InfographicSection() {
           >
             <div className="relative aspect-[3/4] rounded-xl overflow-hidden mb-3">
               <Image
-                src={info.images[0]}
+                src={resolveMediaSrc(info.images[0]?.url)}
                 alt={info.title}
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -137,7 +138,7 @@ async function SpecialFileSection() {
           >
             <div className="relative aspect-[16/9] rounded-xl overflow-hidden">
               <Image
-                src={file.coverImage}
+                src={resolveMediaSrc(file.coverImage)}
                 alt={file.title}
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-500"
