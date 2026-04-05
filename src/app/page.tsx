@@ -1,12 +1,3 @@
-import {
-  sections,
-  breakingItems,
-  infographics,
-  specialFiles,
-  getFeaturedArticles,
-  getLatestArticles,
-  getArticlesBySection,
-} from "@/data";
 import HomeHeroWithThumbStrip from "@/components/HomeHeroWithThumbStrip";
 import BreakingTicker from "@/components/BreakingTicker";
 import FeaturedWithThumbnails from "@/components/FeaturedWithThumbnails";
@@ -19,13 +10,40 @@ import MostReadCarouselTabs from "@/components/MostReadCarouselTabs";
 import SpecialFileHighlight from "@/components/SpecialFileHighlight";
 import NewsletterCTA from "@/components/NewsletterCTA";
 import SectionHeaderBar from "@/components/SectionHeaderBar";
-import type { Article, Section } from "@/data";
+import type { Article, Section, BreakingItem, Infographic, SpecialFile } from "@/types/content";
+import { publicApi } from "@/lib/api";
 
-export default function HomePage() {
-  const featured = getFeaturedArticles();
-  const latest = getLatestArticles(8);
+export default async function HomePage() {
+  const [homeRes, sectionsRes, breakingRes, infographicsRes, specialFilesRes, mostReadRes] = await Promise.all([
+    publicApi.getHomepage(),
+    publicApi.getSections(),
+    publicApi.getBreaking(),
+    publicApi.getInfographics(),
+    publicApi.getSpecialFiles(),
+    publicApi.getMostRead(9),
+  ]);
 
-  const heroArticles: Article[] = dedupeArticles([...featured, ...latest]).slice(0, 8);
+  const modules = (homeRes.data as Record<string, unknown>[]) || [];
+  const sections = (sectionsRes.data as Section[]) || [];
+  const breakingItems = (breakingRes.data as BreakingItem[]) || [];
+  const infographics = (infographicsRes.data as Infographic[]) || [];
+  const specialFiles = (specialFilesRes.data as SpecialFile[]) || [];
+  const mostRead = (mostReadRes.data as Article[]) || [];
+
+  const sectionArticlesMap = new Map<string, Article[]>();
+  const heroArticles: Article[] = [];
+
+  modules.forEach((module) => {
+    const moduleItems = ((module.items as Record<string, unknown>[]) || [])
+      .map((it) => it.article as Article)
+      .filter(Boolean);
+    if ((module.type as string) === "HERO_SLIDER") {
+      heroArticles.push(...moduleItems);
+    }
+    if (module.sectionSlug && moduleItems.length) {
+      sectionArticlesMap.set(module.sectionSlug as string, moduleItems);
+    }
+  });
 
   const eventsToday = sections.find((s) => s.slug === "events-today");
   const countryAffairs = sections.find((s) => s.slug === "country-affairs");
@@ -49,42 +67,42 @@ export default function HomePage() {
         {eventsToday && (
           <FeaturedWithThumbnails
             section={eventsToday}
-            articles={getArticlesBySection(eventsToday.slug)}
+            articles={sectionArticlesMap.get(eventsToday.slug) || []}
           />
         )}
 
         {countryAffairs && (
           <SplitListWithFeatured
             section={countryAffairs}
-            articles={getArticlesBySection(countryAffairs.slug)}
+            articles={sectionArticlesMap.get(countryAffairs.slug) || []}
           />
         )}
 
         {marketMovement && (
           <SectionCarouselModule
             section={marketMovement}
-            articles={getArticlesBySection(marketMovement.slug)}
+            articles={sectionArticlesMap.get(marketMovement.slug) || []}
           />
         )}
 
         {styleStars && (
           <ShotStyleSection
             section={styleStars}
-            articles={getArticlesBySection(styleStars.slug)}
+            articles={sectionArticlesMap.get(styleStars.slug) || []}
           />
         )}
 
         {insideGoal && (
           <TwoRowGridSection
             section={insideGoal}
-            articles={getArticlesBySection(insideGoal.slug)}
+            articles={sectionArticlesMap.get(insideGoal.slug) || []}
           />
         )}
 
         {egyptReality && (
           <HeadlineGridSection
             section={egyptReality}
-            articles={getArticlesBySection(egyptReality.slug)}
+            articles={sectionArticlesMap.get(egyptReality.slug) || []}
           />
         )}
       </div>
@@ -93,10 +111,10 @@ export default function HomePage() {
       <InfographicCarouselStacked items={infographics} />
 
       {/* 5) Most read premium carousel */}
-      <MostReadCarouselTabs />
+      <MostReadCarouselTabs dayArticles={mostRead} weekArticles={[...mostRead].sort((a, b) => (new Date(b.publishedAt || "").getTime() - new Date(a.publishedAt || "").getTime()))} />
 
       {/* 6) Special file highlight */}
-      {specialFile && <SpecialFileHighlight file={specialFile} />}
+      {specialFile && <SpecialFileHighlight file={specialFile} files={specialFiles} />}
 
       {/* 7) Newsletter CTA strip */}
       <NewsletterCTA />

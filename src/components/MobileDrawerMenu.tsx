@@ -2,15 +2,15 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { sections } from "@/data";
-import { series } from "@/data/series";
+import type { Section } from "@/types/content";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
+  sections?: Section[];
 }
 
-export default function MobileDrawerMenu({ isOpen, onClose }: Props) {
+export default function MobileDrawerMenu({ isOpen, onClose, sections = [] }: Props) {
   if (!isOpen) return null;
 
   return (
@@ -63,14 +63,9 @@ export default function MobileDrawerMenu({ isOpen, onClose }: Props) {
             سلاسل المزيد
           </div>
 
-          {series.map((s) => (
-            <DrawerLink
-              key={s.slug}
-              href={`/series/${s.slug}`}
-              label={s.name}
-              onClose={onClose}
-            />
-          ))}
+          <DrawerLink href="/series/first-guide" label="دليلك الأول" onClose={onClose} />
+          <DrawerLink href="/series/shot-comment" label="لقطة وتعليق" onClose={onClose} />
+          <DrawerLink href="/series/mind-logic" label="بالعقل والمنطق" onClose={onClose} />
 
           <div className="mt-6 pt-4 border-t border-border dark:border-border-dark">
             <DrawerLink href="/about" label="عن الدفتر" onClose={onClose} />

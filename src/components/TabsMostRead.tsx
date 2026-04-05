@@ -2,20 +2,27 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { getMostReadArticles, getLatestArticles, timeAgo } from "@/data";
+import type { Article } from "@/types/content";
+import { timeAgo } from "@/lib/date";
 
 const tabs = [
   { id: "most-read", label: "الأكثر قراءة" },
   { id: "latest", label: "الأحدث" },
 ];
 
-export default function TabsMostRead() {
+export default function TabsMostRead({
+  mostRead = [],
+  latest = [],
+}: {
+  mostRead?: Article[];
+  latest?: Article[];
+}) {
   const [activeTab, setActiveTab] = useState("most-read");
 
   const articles =
     activeTab === "most-read"
-      ? getMostReadArticles(8)
-      : getLatestArticles(8);
+      ? mostRead
+      : latest;
 
   return (
     <div className="bg-surface-alt dark:bg-surface-dark-alt rounded-xl p-5">

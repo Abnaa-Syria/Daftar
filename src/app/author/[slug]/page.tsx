@@ -1,39 +1,30 @@
 import { notFound } from "next/navigation";
-import Image from "next/image";
-import { authors, getAuthorBySlug, getArticlesByAuthor } from "@/data";
+import { publicApi } from "@/lib/api";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import NewsCard from "@/components/NewsCard";
-
-export function generateStaticParams() {
-  return authors.map((a) => ({ slug: a.slug }));
-}
+import type { Author, Article } from "@/types/content";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const author = getAuthorBySlug(slug);
+  const res = await publicApi.getAuthor(slug).catch(() => null);
+  const author = (res?.data as { author: Author })?.author;
   return { title: author ? `${author.name} - الدفتر` : "الدفتر" };
 }
 
 export default async function AuthorPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const author = getAuthorBySlug(slug);
+  const res = await publicApi.getAuthor(slug).catch(() => null);
+  const payload = res?.data as { author: Author; data: Article[] } | undefined;
+  const author = payload?.author;
   if (!author) return notFound();
-
-  const authorArticles = getArticlesByAuthor(author.slug);
+  const authorArticles = payload?.data || [];
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
       <Breadcrumbs items={[{ label: author.name }]} />
 
       {/* Author Card */}
-      <div className="bg-surface-alt dark:bg-surface-dark-alt rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-center gap-6 mt-4 mb-10">
-        <Image
-          src={author.avatar}
-          alt={author.name}
-          width={120}
-          height={120}
-          className="rounded-full"
-        />
+      <div className="bg-surface-alt dark:bg-surface-dark-alt rounded-2xl p-6 md:p-8 mt-4 mb-10">
         <div className="text-center md:text-right">
           <h1 className="text-3xl font-extrabold mb-1">{author.name}</h1>
           <span className="text-crimson font-bold text-sm">{author.role}</span>

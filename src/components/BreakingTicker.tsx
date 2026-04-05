@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import type { BreakingItem } from "@/data";
+import type { BreakingItem } from "@/types/content";
 
 interface Props {
   items: BreakingItem[];
@@ -20,15 +20,15 @@ export default function BreakingTicker({ items }: Props) {
           <div className="animate-ticker whitespace-nowrap text-sm font-bold">
             {items.map((item) => (
               <span key={item.id} className="mx-4 inline">
-                {item.articleSlug ? (
+                {item.article?.slug ? (
                   <Link
-                    href={`/news/${item.articleSlug}`}
+                    href={`/news/${item.article.slug}`}
                     className="hover:underline"
                   >
-                    {item.text}
+                    {item.title}
                   </Link>
                 ) : (
-                  item.text
+                  item.title
                 )}
                 <span className="mx-3 text-white/50">◆</span>
               </span>

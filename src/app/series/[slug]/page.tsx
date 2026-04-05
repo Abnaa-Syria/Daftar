@@ -1,26 +1,22 @@
 import { notFound } from "next/navigation";
-import { series, getSeriesBySlug, getArticleById } from "@/data";
+import { publicApi } from "@/lib/api";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import NewsCard from "@/components/NewsCard";
-
-export function generateStaticParams() {
-  return series.map((s) => ({ slug: s.slug }));
-}
+import type { Article } from "@/types/content";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const s = getSeriesBySlug(slug);
+  const res = await publicApi.getSeries(slug).catch(() => null);
+  const s = (res?.data as { name: string }) || null;
   return { title: s ? `${s.name} - الدفتر` : "الدفتر" };
 }
 
 export default async function SeriesPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const s = getSeriesBySlug(slug);
+  const res = await publicApi.getSeries(slug).catch(() => null);
+  const s = res?.data as { name: string; description?: string; articles?: Article[] } | undefined;
   if (!s) return notFound();
-
-  const seriesArticles = s.articleIds
-    .map((id) => getArticleById(id))
-    .filter(Boolean);
+  const seriesArticles = s.articles || [];
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">

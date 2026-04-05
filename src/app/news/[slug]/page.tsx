@@ -1,41 +1,35 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  articles,
-  getArticleBySlug,
-  getAuthorById,
-  getSectionById,
-  getTagById,
-  getRelatedArticles,
-  formatDate,
-  timeAgo,
-} from "@/data";
+import { publicApi } from "@/lib/api";
+import { formatDate, timeAgo } from "@/lib/date";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import ShareBar from "@/components/ShareBar";
 import BookmarkButton from "@/components/BookmarkButton";
 import FontSizeControls from "@/components/FontSizeControls";
 import RelatedList from "@/components/RelatedList";
-
-export function generateStaticParams() {
-  return articles.map((a) => ({ slug: a.slug }));
-}
+import type { Article } from "@/types/content";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const article = getArticleBySlug(slug);
+  const res = await publicApi.getArticle(slug).catch(() => null);
+  const article = (res?.data as Article) || null;
   return { title: article ? `${article.title} - الدفتر` : "الدفتر" };
 }
 
 export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const article = getArticleBySlug(slug);
+  const [articleRes, relatedRes] = await Promise.all([
+    publicApi.getArticle(slug).catch(() => null),
+    publicApi.getRelated(slug).catch(() => null),
+  ]);
+  const article = (articleRes?.data as Article) || null;
   if (!article) return notFound();
 
-  const author = getAuthorById(article.authorId);
-  const section = getSectionById(article.sectionId);
-  const tagObjects = article.tags.map((t) => getTagById(t)).filter(Boolean);
-  const related = getRelatedArticles(article, 4);
+  const author = article.author;
+  const section = article.section;
+  const tagObjects = article.tags || [];
+  const related = (relatedRes?.data as Article[]) || [];
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-6">
@@ -61,25 +55,8 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
       {/* Meta Row */}
       <div className="flex flex-wrap items-center gap-4 mb-6 pb-6 border-b border-border dark:border-border-dark">
         {author && (
-          <Link
-            href={`/author/${author.slug}`}
-            className="flex items-center gap-3 group"
-          >
-            <Image
-              src={author.avatar}
-              alt={author.name}
-              width={40}
-              height={40}
-              className="rounded-full"
-            />
-            <div>
-              <span className="block text-sm font-bold group-hover:text-crimson transition-colors">
-                {author.name}
-              </span>
-              <span className="block text-xs text-text-secondary dark:text-text-dark-secondary">
-                {author.role}
-              </span>
-            </div>
+          <Link href={`/author/${author.slug}`} className="text-sm font-bold hover:text-crimson transition-colors">
+            بقلم {author.name}
           </Link>
         )}
         <div className="flex items-center gap-3 text-xs text-text-secondary dark:text-text-dark-secondary">
@@ -87,9 +64,9 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           <span>•</span>
           <span>{timeAgo(article.publishedAt)}</span>
           <span>•</span>
-          <span>{article.readTime} دقائق قراءة</span>
+          <span>{article.readTime || 0} دقائق قراءة</span>
           <span>•</span>
-          <span>{article.views.toLocaleString("ar-EG")} مشاهدة</span>
+          <span>{(article.views || 0).toLocaleString("ar-EG")} مشاهدة</span>
         </div>
       </div>
 
@@ -105,7 +82,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
       {/* Hero Image */}
       <div className="relative aspect-[16/9] rounded-xl overflow-hidden mb-8">
         <Image
-          src={article.image}
+          src={article.image || "/logo.png"}
           alt={article.title}
           fill
           className="object-cover"
@@ -117,7 +94,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
       {/* Article Content */}
       <article
         className="prose prose-lg max-w-none dark:prose-invert prose-headings:font-extrabold prose-p:leading-[1.9] prose-p:text-text-primary dark:prose-p:text-text-dark-primary"
-        dangerouslySetInnerHTML={{ __html: article.content }}
+        dangerouslySetInnerHTML={{ __html: article.content || "" }}
       />
 
       {/* Tags */}

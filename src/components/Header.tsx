@@ -4,8 +4,17 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 import MobileDrawerMenu from "./MobileDrawerMenu";
+import type { Section } from "@/types/content";
 
-export default function Header() {
+export default function Header({
+  sections = [],
+  supervisorName,
+  editorInChiefName,
+}: {
+  sections?: Section[];
+  supervisorName?: string;
+  editorInChiefName?: string;
+}) {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -34,7 +43,7 @@ export default function Header() {
             </button>
 
             {/* Logo */}
-            <Link href="/" className="flex items-center">
+            <Link href="/" className="flex items-center gap-3">
               <Image
                 src="/logo.png"
                 alt="الدفتر مصر"
@@ -43,6 +52,15 @@ export default function Header() {
                 className="h-10 w-auto"
                 priority
               />
+              {/* Desktop-only editorial names (mobile gets its own stacked row below) */}
+              <div className="hidden md:block text-right leading-tight text-white">
+                <p className="text-xs font-semibold text-white/90">
+                  المشرف العام {supervisorName || "عبدالرحمن الناصري"}
+                </p>
+                <p className="text-xs font-semibold text-white/80 mt-0.5">
+                  رئيس التحرير {editorInChiefName || "محمد مجلى"}
+                </p>
+              </div>
             </Link>
 
             {/* Actions */}
@@ -57,6 +75,26 @@ export default function Header() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile editorial names: two separated side-by-side columns */}
+        <div className="md:hidden border-t border-white/10 bg-navy dark:bg-navy-dark">
+          <div className="max-w-7xl mx-auto px-4 py-2">
+            <div className="grid grid-cols-2 gap-4 text-white">
+              <div className="text-center leading-tight">
+                <p className="text-[11px] font-semibold text-white/80">المشرف العام</p>
+                <p className="text-[12px] font-bold text-white mt-0.5">
+                  {supervisorName || "عبدالرحمن الناصري"}
+                </p>
+              </div>
+              <div className="text-center leading-tight">
+                <p className="text-[11px] font-semibold text-white/80">رئيس التحرير</p>
+                <p className="text-[12px] font-bold text-white mt-0.5">
+                  {editorInChiefName || "محمد مجلى"}
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -91,21 +129,15 @@ export default function Header() {
             <div className="flex items-center gap-1 py-2 whitespace-nowrap">
               <NavLink href="/" label="الرئيسية" />
               <NavLink href="/breaking" label="عاجل" highlight />
-              <NavLink href="/section/events-today" label="أحداث اليوم" />
-              <NavLink href="/section/country-affairs" label="شؤون البلد" />
-              <NavLink href="/section/market-movement" label="حركة السوق" />
-              <NavLink href="/section/style-stars" label="ستايل ونجوم" />
-              <NavLink href="/section/inside-goal" label="جوّه الجون" />
-              <NavLink href="/section/egypt-reality" label="الواقع المصري" />
-              <NavLink href="/section/special-file" label="ملف خاص" />
-              <NavLink href="/section/infographic" label="الانفو جراف" />
-              <NavLink href="/section/people-street" label="الناس والشارع" />
+              {sections.map((section) => (
+                <NavLink key={section.slug} href={`/section/${section.slug}`} label={section.name} />
+              ))}
             </div>
           </div>
         </nav>
       </header>
 
-      <MobileDrawerMenu isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} />
+      <MobileDrawerMenu isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} sections={sections} />
     </>
   );
 }

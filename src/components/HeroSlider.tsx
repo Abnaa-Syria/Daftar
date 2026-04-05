@@ -3,7 +3,8 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Article, getAuthorById, getSectionById, timeAgo } from "@/data";
+import type { Article } from "@/types/content";
+import { timeAgo } from "@/lib/date";
 
 interface Props {
   articles: Article[];
@@ -28,8 +29,8 @@ export default function HeroSlider({ articles }: Props) {
   if (!articles.length) return null;
 
   const article = articles[current];
-  const author = getAuthorById(article.authorId);
-  const section = getSectionById(article.sectionId);
+  const author = article.author;
+  const section = article.section;
 
   return (
     <div className="relative aspect-[16/7] md:aspect-[16/6] rounded-2xl overflow-hidden group">
@@ -41,7 +42,7 @@ export default function HeroSlider({ articles }: Props) {
           }`}
         >
           <Image
-            src={a.image}
+            src={a.image || "/logo.png"}
             alt={a.title}
             fill
             className="object-cover"

@@ -5,23 +5,45 @@ import { useEffect, useRef, useState, TouchEvent } from "react";
 interface CardCarouselProps {
   items: React.ReactNode[];
   itemsPerView?: number;
+  tabletItemsPerView?: number;
+  mobileItemsPerView?: number;
   ariaLabel?: string;
   autoPlay?: boolean;
   autoPlayIntervalMs?: number;
+  mobileIndicatorsVariant?: "dots" | "bars";
 }
 
 export default function CardCarousel({
   items,
   itemsPerView = 3,
+  tabletItemsPerView = 2,
+  mobileItemsPerView = 1,
   ariaLabel,
   autoPlay = false,
   autoPlayIntervalMs = 7000,
+  mobileIndicatorsVariant = "dots",
 }: CardCarouselProps) {
   const [index, setIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
+  const [viewportWidth, setViewportWidth] = useState<number>(1024);
   const touchStartX = useRef<number | null>(null);
 
-  const totalPages = Math.max(1, Math.ceil(items.length / itemsPerView));
+  useEffect(() => {
+    const updateViewport = () => setViewportWidth(window.innerWidth);
+    updateViewport();
+    window.addEventListener("resize", updateViewport);
+    return () => window.removeEventListener("resize", updateViewport);
+  }, []);
+
+  const currentItemsPerView =
+    viewportWidth < 640
+      ? mobileItemsPerView
+      : viewportWidth < 1024
+        ? tabletItemsPerView
+        : itemsPerView;
+
+  const totalPages = Math.max(1, Math.ceil(items.length / currentItemsPerView));
+  const isMobileView = viewportWidth < 640;
 
   const goTo = (page: number) => {
     const safe = ((page % totalPages) + totalPages) % totalPages;
@@ -59,8 +81,15 @@ export default function CardCarousel({
     touchStartX.current = null;
   };
 
-  const start = index * itemsPerView;
-  const visible = items.slice(start, start + itemsPerView);
+  useEffect(() => {
+    setIndex((prev) => {
+      if (prev <= totalPages - 1) return prev;
+      return Math.max(0, totalPages - 1);
+    });
+  }, [totalPages]);
+
+  const start = index * currentItemsPerView;
+  const visible = items.slice(start, start + currentItemsPerView);
 
   return (
     <div
@@ -71,7 +100,10 @@ export default function CardCarousel({
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div
+        className="grid gap-4"
+        style={{ gridTemplateColumns: `repeat(${currentItemsPerView}, minmax(0, 1fr))` }}
+      >
         {visible.map((item, i) => (
           <div key={start + i} className="h-full">
             {item}
@@ -108,9 +140,15 @@ export default function CardCarousel({
                 key={i}
                 type="button"
                 onClick={() => goTo(i)}
-                className={`w-2.5 h-2.5 rounded-full transition-all ${
-                  i === index ? "bg-crimson w-5" : "bg-border dark:bg-border-dark"
-                }`}
+                className={
+                  mobileIndicatorsVariant === "bars" && isMobileView
+                    ? `h-1.5 w-8 transition-all ${
+                        i === index ? "bg-crimson" : "bg-border dark:bg-border-dark"
+                      }`
+                    : `w-2.5 h-2.5 rounded-full transition-all ${
+                        i === index ? "bg-crimson w-5" : "bg-border dark:bg-border-dark"
+                      }`
+                }
                 aria-label={`الصفحة ${i + 1}`}
               />
             ))}

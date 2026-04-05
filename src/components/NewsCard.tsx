@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Article, getAuthorById, getSectionById, timeAgo } from "@/data";
+import type { Article } from "@/types/content";
+import { timeAgo } from "@/lib/date";
 
 interface Props {
   article: Article;
@@ -9,15 +10,15 @@ interface Props {
 }
 
 export default function NewsCard({ article, variant = "compact", showSection = false }: Props) {
-  const author = getAuthorById(article.authorId);
-  const section = getSectionById(article.sectionId);
+  const author = article.author;
+  const section = article.section;
 
   if (variant === "featured") {
     return (
       <Link href={`/news/${article.slug}`} className="group block">
         <div className="relative aspect-[16/9] rounded-xl overflow-hidden">
           <Image
-            src={article.image}
+            src={article.image || "/logo.png"}
             alt={article.title}
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -42,7 +43,7 @@ export default function NewsCard({ article, variant = "compact", showSection = f
               <span>•</span>
               <span>{timeAgo(article.publishedAt)}</span>
               <span>•</span>
-              <span>{article.readTime} د قراءة</span>
+          <span>{article.readTime || 0} د قراءة</span>
             </div>
           </div>
         </div>
@@ -55,7 +56,7 @@ export default function NewsCard({ article, variant = "compact", showSection = f
       <Link href={`/news/${article.slug}`} className="group flex gap-4">
         <div className="relative w-32 h-24 md:w-44 md:h-28 rounded-lg overflow-hidden shrink-0">
           <Image
-            src={article.image}
+            src={article.image || "/logo.png"}
             alt={article.title}
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -77,7 +78,7 @@ export default function NewsCard({ article, variant = "compact", showSection = f
           <div className="flex items-center gap-2 text-text-secondary dark:text-text-dark-secondary text-xs mt-2">
             <span>{timeAgo(article.publishedAt)}</span>
             <span>•</span>
-            <span>{article.readTime} د قراءة</span>
+            <span>{article.readTime || 0} د قراءة</span>
           </div>
         </div>
       </Link>
@@ -89,7 +90,7 @@ export default function NewsCard({ article, variant = "compact", showSection = f
     <Link href={`/news/${article.slug}`} className="group block">
       <div className="relative aspect-[16/10] rounded-lg overflow-hidden mb-3">
         <Image
-          src={article.image}
+          src={article.image || "/logo.png"}
           alt={article.title}
           fill
           className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -110,7 +111,7 @@ export default function NewsCard({ article, variant = "compact", showSection = f
       <div className="flex items-center gap-2 text-text-secondary dark:text-text-dark-secondary text-xs mt-2">
         <span>{timeAgo(article.publishedAt)}</span>
         <span>•</span>
-        <span>{article.readTime} د قراءة</span>
+        <span>{article.readTime || 0} د قراءة</span>
       </div>
     </Link>
   );

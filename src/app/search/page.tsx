@@ -2,37 +2,38 @@
 
 import { Suspense, useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import { searchArticles, sections } from "@/data";
+import { publicApi } from "@/lib/api";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import NewsCard from "@/components/NewsCard";
-import type { Article } from "@/data";
+import type { Article, Section } from "@/types/content";
 
 function SearchContent() {
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get("q") || "";
   const [query, setQuery] = useState(initialQuery);
   const [results, setResults] = useState<Article[]>([]);
+  const [sections, setSections] = useState<Section[]>([]);
   const [sectionFilter, setSectionFilter] = useState("");
   const [sortBy, setSortBy] = useState<"relevance" | "date" | "views">("relevance");
 
   useEffect(() => {
-    if (query.trim()) {
-      let filtered = searchArticles(query);
-      if (sectionFilter) {
-        filtered = filtered.filter((a) => a.sectionId === sectionFilter);
+    publicApi.getSections().then((res) => setSections((res.data as Section[]) || [])).catch(() => setSections([]));
+  }, []);
+
+  useEffect(() => {
+    const run = async () => {
+      if (!query.trim()) {
+        setResults([]);
+        return;
       }
-      if (sortBy === "date") {
-        filtered.sort(
-          (a, b) =>
-            new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
-        );
-      } else if (sortBy === "views") {
-        filtered.sort((a, b) => b.views - a.views);
-      }
-      setResults(filtered);
-    } else {
-      setResults([]);
-    }
+      const params: Record<string, string> = { q: query, limit: "30" };
+      if (sectionFilter) params.sectionId = sectionFilter;
+      if (sortBy === "date") params.sort = "publishedAt";
+      if (sortBy === "views") params.sort = "views";
+      const res = await publicApi.search(params).catch(() => null);
+      setResults((res?.data as Article[]) || []);
+    };
+    run();
   }, [query, sectionFilter, sortBy]);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -66,7 +67,7 @@ function SearchContent() {
           >
             <option value="">الكل</option>
             {sections.map((s) => (
-              <option key={s.id} value={s.id}>
+              <option key={s.id} value={String(s.id)}>
                 {s.name}
               </option>
             ))}

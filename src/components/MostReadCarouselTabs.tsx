@@ -1,21 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import type { Article } from "@/data";
-import { getMostReadArticles, getLatestArticles, getSectionById, timeAgo } from "@/data";
+import type { Article } from "@/types/content";
+import { timeAgo } from "@/lib/date";
 import CardCarousel from "./CardCarousel";
 import SectionHeaderBar from "./SectionHeaderBar";
 import Link from "next/link";
 import Image from "next/image";
 
-export default function MostReadCarouselTabs() {
+export default function MostReadCarouselTabs({
+  dayArticles = [],
+  weekArticles = [],
+}: {
+  dayArticles?: Article[];
+  weekArticles?: Article[];
+}) {
   const [tab, setTab] = useState<"day" | "week">("day");
-
-  const dayArticles = getMostReadArticles(9);
-  const weekArticles = getMostReadArticles(9).slice().sort((a, b) => {
-    // simple variation: sort by publishedAt descending as a stand-in for weekly
-    return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
-  });
 
   const current: Article[] = tab === "day" ? dayArticles : weekArticles;
 
@@ -65,7 +65,7 @@ interface CardProps {
 }
 
 function MostReadCard({ article }: CardProps) {
-  const section = getSectionById(article.sectionId);
+  const section = article.section;
 
   return (
     <Link
@@ -74,7 +74,7 @@ function MostReadCard({ article }: CardProps) {
     >
       <div className="relative aspect-[16/10]">
         <Image
-          src={article.image}
+          src={article.image || "/logo.png"}
           alt={article.title}
           fill
           className="object-cover transition-transform duration-500"

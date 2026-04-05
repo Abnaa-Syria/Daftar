@@ -1,8 +1,8 @@
 import Link from "next/link";
-import type { Article, Section } from "@/data";
+import type { Article, Section } from "@/types/content";
 import NewsCard from "./NewsCard";
 import SectionHeaderBar from "./SectionHeaderBar";
-import { timeAgo } from "@/data";
+import { timeAgo } from "@/lib/date";
 
 interface Props {
   section: Section;

@@ -3,8 +3,8 @@
 import { useEffect, useRef, useState, TouchEvent } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import type { Article } from "@/data";
-import { getAuthorById, timeAgo, getSectionById } from "@/data";
+import type { Article } from "@/types/content";
+import { timeAgo } from "@/lib/date";
 
 interface Props {
   articles: Article[];
@@ -55,8 +55,8 @@ export default function HomeHeroWithThumbStrip({ articles, title = "أهم ال�
   if (!visibleArticles.length) return null;
 
   const active = visibleArticles[current];
-  const author = getAuthorById(active.authorId);
-  const section = getSectionById(active.sectionId);
+  const author = active.author;
+  const section = active.section;
 
   return (
     <section className="space-y-4">
@@ -89,7 +89,7 @@ export default function HomeHeroWithThumbStrip({ articles, title = "أهم ال�
               }`}
             >
               <Image
-                src={article.image}
+                src={article.image || "/logo.png"}
                 alt={article.title}
                 fill
                 className="object-cover"
@@ -207,7 +207,7 @@ export default function HomeHeroWithThumbStrip({ articles, title = "أهم ال�
           >
             <div className="relative w-16 h-16 shrink-0">
               <Image
-                src={article.image}
+                src={article.image || "/logo.png"}
                 alt={article.title}
                 fill
                 className="object-cover"

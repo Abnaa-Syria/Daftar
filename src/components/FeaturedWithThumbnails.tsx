@@ -1,4 +1,4 @@
-import type { Article, Section } from "@/data";
+import type { Article, Section } from "@/types/content";
 import NewsCard from "./NewsCard";
 import SectionHeaderBar from "./SectionHeaderBar";
 

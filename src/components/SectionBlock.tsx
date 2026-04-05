@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Article, Section } from "@/data";
+import type { Article, Section } from "@/types/content";
 import NewsCard from "./NewsCard";
 
 interface Props {

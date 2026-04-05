@@ -1,24 +1,23 @@
 import { notFound } from "next/navigation";
-import { tags, getTagBySlug, getArticlesByTag } from "@/data";
+import { publicApi } from "@/lib/api";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import NewsCard from "@/components/NewsCard";
-
-export function generateStaticParams() {
-  return tags.map((t) => ({ slug: t.slug }));
-}
+import type { Tag, Article } from "@/types/content";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const tag = getTagBySlug(slug);
+  const res = await publicApi.getTag(slug).catch(() => null);
+  const tag = (res?.data as { tag: Tag })?.tag;
   return { title: tag ? `${tag.name} - الدفتر` : "الدفتر" };
 }
 
 export default async function TagPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const tag = getTagBySlug(slug);
+  const res = await publicApi.getTag(slug).catch(() => null);
+  const payload = res?.data as { tag: Tag; data: Article[] } | undefined;
+  const tag = payload?.tag;
   if (!tag) return notFound();
-
-  const tagArticles = getArticlesByTag(tag.slug);
+  const tagArticles = payload?.data || [];
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">

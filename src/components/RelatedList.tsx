@@ -1,4 +1,4 @@
-import { Article } from "@/data";
+import type { Article } from "@/types/content";
 import NewsCard from "./NewsCard";
 
 interface Props {

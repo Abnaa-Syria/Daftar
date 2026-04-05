@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import { Almarai } from "next/font/google";
 import "./globals.css";
 import ThemeProvider from "@/components/ThemeProvider";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import RootChrome from "@/components/RootChrome";
+import { publicApi } from "@/lib/api";
+import type { Section } from "@/types/content";
 
 const almarai = Almarai({
   subsets: ["arabic"],
@@ -17,18 +18,30 @@ export const metadata: Metadata = {
   description: "منصة إخبارية عربية شاملة تقدم أحدث الأخبار والتحليلات والتقارير المعمقة",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const [sectionsRes, settingsRes] = await Promise.all([
+    publicApi.getSections().catch(() => null),
+    publicApi.getSettings().catch(() => null),
+  ]);
+  const sections = (sectionsRes?.data as Section[]) || [];
+  const settings = (settingsRes?.data as Record<string, Record<string, string>>) || {};
+  const editorial = settings.editorial || {};
+
   return (
     <html lang="ar" dir="rtl" className={almarai.variable}>
       <body className="font-[family-name:var(--font-almarai)] bg-surface dark:bg-surface-dark text-text-primary dark:text-text-dark-primary min-h-screen">
         <ThemeProvider>
-          <Header />
-          <main className="min-h-[60vh]">{children}</main>
-          <Footer />
+          <RootChrome
+            sections={sections}
+            supervisorName={editorial.supervisor_name}
+            editorInChiefName={editorial.editor_in_chief}
+          >
+            {children}
+          </RootChrome>
         </ThemeProvider>
       </body>
     </html>

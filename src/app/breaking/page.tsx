@@ -1,10 +1,14 @@
-import { breakingItems, getArticleBySlug, formatDate, formatTime } from "@/data";
+import { publicApi } from "@/lib/api";
+import { formatDate, formatTime } from "@/lib/date";
 import Link from "next/link";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import type { BreakingItem } from "@/types/content";
 
 export const metadata = { title: "عاجل - الدفتر" };
 
-export default function BreakingPage() {
+export default async function BreakingPage() {
+  const res = await publicApi.getBreaking().catch(() => null);
+  const breakingItems = (res?.data as BreakingItem[]) || [];
   return (
     <div className="max-w-4xl mx-auto px-4 py-6">
       <Breadcrumbs items={[{ label: "عاجل" }]} />
@@ -25,18 +29,18 @@ export default function BreakingPage() {
 
             <div className="bg-white dark:bg-surface-dark-alt rounded-xl p-5 shadow-sm">
               <div className="flex items-center gap-2 mb-2 text-xs text-text-secondary dark:text-text-dark-secondary">
-                <span>{formatDate(item.timestamp)}</span>
+                <span>{formatDate(item.publishedAt)}</span>
                 <span>•</span>
-                <span>{formatTime(item.timestamp)}</span>
+                <span>{formatTime(item.publishedAt)}</span>
               </div>
 
               <p className="font-bold text-base leading-relaxed">
-                {item.text}
+                {item.title}
               </p>
 
-              {item.articleSlug && (
+              {item.article?.slug && (
                 <Link
-                  href={`/news/${item.articleSlug}`}
+                  href={`/news/${item.article.slug}`}
                   className="inline-block mt-3 text-sm font-bold text-crimson hover:underline"
                 >
                   اقرأ التفاصيل ←

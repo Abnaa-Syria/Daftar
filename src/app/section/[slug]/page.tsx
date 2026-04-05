@@ -1,23 +1,23 @@
 import { notFound } from "next/navigation";
-import { sections, getArticlesBySection, getSectionBySlug, infographics, specialFiles, formatDate } from "@/data";
+import { publicApi } from "@/lib/api";
+import { formatDate } from "@/lib/date";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import NewsCard from "@/components/NewsCard";
 import Link from "next/link";
 import Image from "next/image";
-
-export function generateStaticParams() {
-  return sections.map((s) => ({ slug: s.slug }));
-}
+import type { Section, Article, Infographic, SpecialFile } from "@/types/content";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const section = getSectionBySlug(slug);
+  const res = await publicApi.getSection(slug).catch(() => null);
+  const section = res?.data ? (res.data as { section: Section }).section : null;
   return { title: section ? `${section.name} - الدفتر` : "الدفتر" };
 }
 
 export default async function SectionPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const section = getSectionBySlug(slug);
+  const sectionRes = await publicApi.getSection(slug).catch(() => null);
+  const section = sectionRes?.data ? (sectionRes.data as { section: Section }).section : null;
   if (!section) return notFound();
 
   if (section.slug === "infographic") {
@@ -28,7 +28,7 @@ export default async function SectionPage({ params }: { params: Promise<{ slug: 
     return <SpecialFileSection />;
   }
 
-  const articles = getArticlesBySection(section.slug);
+  const articles = ((sectionRes?.data as { data: Article[] })?.data || []) as Article[];
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
@@ -62,7 +62,9 @@ export default async function SectionPage({ params }: { params: Promise<{ slug: 
   );
 }
 
-function InfographicSection() {
+async function InfographicSection() {
+  const infoRes = await publicApi.getInfographics().catch(() => null);
+  const infographics = (infoRes?.data as Infographic[]) || [];
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
       <Breadcrumbs items={[{ label: "الانفو جراف" }]} />
@@ -109,7 +111,9 @@ function InfographicSection() {
   );
 }
 
-function SpecialFileSection() {
+async function SpecialFileSection() {
+  const filesRes = await publicApi.getSpecialFiles().catch(() => null);
+  const specialFiles = (filesRes?.data as SpecialFile[]) || [];
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
       <Breadcrumbs items={[{ label: "ملف خاص" }]} />

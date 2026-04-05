@@ -1,27 +1,24 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import { specialFiles, getSpecialFileBySlug, getArticleById, formatDate } from "@/data";
+import { publicApi } from "@/lib/api";
+import { formatDate } from "@/lib/date";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import NewsCard from "@/components/NewsCard";
-
-export function generateStaticParams() {
-  return specialFiles.map((f) => ({ slug: f.slug }));
-}
+import type { SpecialFile } from "@/types/content";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const file = getSpecialFileBySlug(slug);
+  const res = await publicApi.getSpecialFile(slug).catch(() => null);
+  const file = res?.data as SpecialFile | undefined;
   return { title: file ? `${file.title} - ملف خاص - الدفتر` : "الدفتر" };
 }
 
 export default async function SpecialFilePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const file = getSpecialFileBySlug(slug);
+  const res = await publicApi.getSpecialFile(slug).catch(() => null);
+  const file = res?.data as SpecialFile | undefined;
   if (!file) return notFound();
-
-  const fileArticles = file.articleIds
-    .map((id) => getArticleById(id))
-    .filter(Boolean);
+  const fileArticles = (file.articles || []).map((a) => a.article).filter(Boolean);
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
@@ -35,7 +32,7 @@ export default async function SpecialFilePage({ params }: { params: Promise<{ sl
       {/* Cover */}
       <div className="relative aspect-[16/6] rounded-2xl overflow-hidden mt-4 mb-8">
         <Image
-          src={file.coverImage}
+          src={file.coverImage || "/logo.png"}
           alt={file.title}
           fill
           className="object-cover"

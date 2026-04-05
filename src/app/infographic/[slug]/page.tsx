@@ -1,21 +1,21 @@
 import { notFound } from "next/navigation";
-import { infographics, getInfographicBySlug, formatDate } from "@/data";
+import { publicApi } from "@/lib/api";
+import { formatDate } from "@/lib/date";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import Carousel from "@/components/Carousel";
-
-export function generateStaticParams() {
-  return infographics.map((i) => ({ slug: i.slug }));
-}
+import type { Infographic } from "@/types/content";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const info = getInfographicBySlug(slug);
+  const res = await publicApi.getInfographic(slug).catch(() => null);
+  const info = res?.data as Infographic | undefined;
   return { title: info ? `${info.title} - الدفتر` : "الدفتر" };
 }
 
 export default async function InfographicPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const info = getInfographicBySlug(slug);
+  const res = await publicApi.getInfographic(slug).catch(() => null);
+  const info = res?.data as Infographic | undefined;
   if (!info) return notFound();
 
   return (
@@ -35,7 +35,7 @@ export default async function InfographicPage({ params }: { params: Promise<{ sl
         {formatDate(info.publishedAt)}
       </span>
 
-      <Carousel images={info.images} title={info.title} />
+      <Carousel images={(info.images || []).map((img) => img.url)} title={info.title} />
     </div>
   );
 }
