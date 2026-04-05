@@ -3,7 +3,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { adminApi } from "@/lib/api";
 
-interface MenuItem { id: number; label: string; url: string; sortOrder: number; }
+interface MenuItem { id: number; label: string; url: string; sortOrder: number; target?: string; icon?: string; isActive?: boolean; }
 interface Menu { id: number; name: string; location: string; isActive: boolean; items: MenuItem[]; }
 
 export default function AdminMenusPage() {

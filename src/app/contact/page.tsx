@@ -1,6 +1,7 @@
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { publicApi } from "@/lib/api";
 import SocialLinks from "@/components/SocialLinks";
+export const dynamic = "force-dynamic";
 import { notFound } from "next/navigation";
 
 export const metadata = { title: "تواصل معنا - الدفتر" };

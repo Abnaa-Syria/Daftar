@@ -1,6 +1,7 @@
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { publicApi } from "@/lib/api";
 import { notFound } from "next/navigation";
+export const dynamic = "force-dynamic";
 
 export const metadata = { title: "???? ????????? - ??????" };
 
