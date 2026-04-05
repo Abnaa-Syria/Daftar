@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  allowedDevOrigins: ["aldaftar.news", "*.aldaftar.news"],
   images: {
     remotePatterns: [
       {
@@ -14,6 +15,10 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "picsum.photos",
+      },
+      {
+        protocol: "https",
+        hostname: "back.aldaftar.news",
       },
       {
         protocol: "http",
